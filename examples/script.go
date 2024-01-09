@@ -12,5 +12,5 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(res)
+	fmt.Println(res.Textify())
 }
