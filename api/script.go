@@ -23,7 +23,7 @@ func GetScript(id int) (Script, error) {
 	}
 
 	for _, line := range res.S {
-		script.Lines = append(script.Lines, line.Text)
+		script.Lines = append(script.Lines, strings.ReplaceAll(line.Text, "&nbsp;", " "))
 	}
 
 	return script, nil
