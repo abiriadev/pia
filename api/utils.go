@@ -8,7 +8,14 @@ import (
 func getJson[T any](url string) (T, error) {
 	var body T
 
-	res, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return body, err
+	}
+
+	req.Header.Add("User-Agent", "pia")
+
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return body, err
 	}
