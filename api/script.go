@@ -6,8 +6,14 @@ type Script struct {
 	Lines []string
 }
 
-func GetScript(id int) (Script, error) {
-	s, err := getJson[Script](endPoint + strconv.Itoa(id))
+type rawScript struct {
+	S []struct {
+		Text string `json:"text"`
+	} `json:"s"`
+}
+
+func GetScript(id int) (rawScript, error) {
+	s, err := getJson[rawScript](endPoint + strconv.Itoa(id))
 	if err != nil {
 		return s, err
 	}
