@@ -12,11 +12,16 @@ type rawScript struct {
 	} `json:"s"`
 }
 
-func GetScript(id int) (rawScript, error) {
-	s, err := getJson[rawScript](endPoint + strconv.Itoa(id))
+func GetScript(id int) (Script, error) {
+	var script Script
+	res, err := getJson[rawScript](endPoint + strconv.Itoa(id))
 	if err != nil {
-		return s, err
+		return script, err
 	}
 
-	return s, nil
+	for _, line := range res.S {
+		script.Lines = append(script.Lines, line.Text)
+	}
+
+	return script, nil
 }
