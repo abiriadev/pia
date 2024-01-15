@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"astuart.co/goq"
 )
@@ -63,4 +65,18 @@ func getHtml[T any](url string) (T, error) {
 	}
 
 	return body, nil
+}
+
+func postBody(url string, form url.Values) (io.Reader, error) {
+	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := call(*req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
