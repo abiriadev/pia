@@ -1,6 +1,7 @@
 package api
 
 type Toc struct {
+	Chapters []string `goquery:"#episode_list_viewer > table > tr > .ion-bookmark"`
 }
 
 func GetToc(id int) (Toc, error) {
