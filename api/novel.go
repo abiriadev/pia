@@ -5,7 +5,7 @@ import (
 )
 
 type Novel struct {
-	Title string
+	Title string `goquery:".epnew-novel-title"`
 }
 
 func GetNovel(id int) (Novel, error) {
