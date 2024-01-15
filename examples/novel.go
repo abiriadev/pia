@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/abiriadev/pia/api"
+	"github.com/kr/pretty"
 )
 
 func main() {
@@ -12,5 +11,5 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(res)
+	pretty.Println(res)
 }
