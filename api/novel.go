@@ -8,8 +8,10 @@ import (
 )
 
 type Novel struct {
-	Title string   `goquery:".epnew-novel-title"`
-	Tags  []string `goquery:".epnew-novel-info .writer-tag > .tag"`
+	Title    string   `goquery:".epnew-novel-title"`
+	Author   string   `goquery:".in-writer .writer-name"`
+	Synopsis string   `goquery:".epnew-novel-info .synopsis"`
+	Tags     []string `goquery:".epnew-novel-info .writer-tag > .tag"`
 }
 
 func GetNovel(id int) (Novel, error) {
