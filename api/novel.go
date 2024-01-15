@@ -2,6 +2,9 @@ package api
 
 import (
 	"strconv"
+	"strings"
+
+	"github.com/samber/lo"
 )
 
 type Novel struct {
@@ -14,6 +17,10 @@ func GetNovel(id int) (Novel, error) {
 	if err != nil {
 		return *new(Novel), err
 	}
+
+	novel.Tags = lo.Map(novel.Tags, func(tag string, _ int) string {
+		return strings.TrimPrefix(tag, "#")
+	})
 
 	return novel, nil
 }
