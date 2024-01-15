@@ -6,7 +6,7 @@ import (
 )
 
 type Toc struct {
-	Chapters []string `goquery:"#episode_list_viewer > table > tr > .ion-bookmark"`
+	Chapters string `goquery:"td.font12 > b"`
 }
 
 func GetToc(id int) (Toc, error) {
