@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+
+	"astuart.co/goq"
 )
 
 func getBody(url string) (io.Reader, error) {
@@ -31,6 +33,22 @@ func getJson[T any](url string) (T, error) {
 	}
 
 	err = json.NewDecoder(res).Decode(&body)
+	if err != nil {
+		return body, err
+	}
+
+	return body, nil
+}
+
+func getHtml[T any](url string) (T, error) {
+	var body T
+
+	res, err := getBody(url)
+	if err != nil {
+		return body, err
+	}
+
+	err = goq.NewDecoder(res).Decode(&body)
 	if err != nil {
 		return body, err
 	}
