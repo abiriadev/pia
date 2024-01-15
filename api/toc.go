@@ -5,8 +5,14 @@ import (
 	"strconv"
 )
 
+type Chapter struct {
+	Name string `goquery:"td.font12 > b,html"`
+	Id   string `goquery:"tr > td:first-child,html"`
+	Type string `goquery:"td.font12 > b > span"`
+}
+
 type Toc struct {
-	Chapters string `goquery:"td.font12 > b"`
+	Chapters []Chapter `goquery:"tr"`
 }
 
 func GetToc(id int) (Toc, error) {
