@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
@@ -26,4 +27,20 @@ func getJson[T any](url string) (T, error) {
 	}
 
 	return body, nil
+}
+
+func getBody(url string) (io.Reader, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("User-Agent", "pia")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Body, nil
 }
