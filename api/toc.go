@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/otterize/lox"
 )
 
 type Toc struct {
@@ -36,21 +37,17 @@ func GetToc(id int) (Toc, error) {
 		return *new(Toc), err
 	}
 
-	toc := Toc{
-		Chapters: make([]Chapter, len(rawToc.Chapters)),
-	}
-
-	for i, chapter := range rawToc.Chapters {
+	Chapters, err := lox.MapErr(rawToc.Chapters, func(chapter rawChapter, _ int) (Chapter, error) {
 		nameDoc, err := goquery.NewDocumentFromReader(strings.NewReader(chapter.Name))
 		if err != nil {
-			return *new(Toc), err
+			return *new(Chapter), err
 		}
 
 		Name := strings.TrimSpace(nameDoc.Children().Children().Eq(1).Contents().Last().Text())
 
 		idDoc, err := goquery.NewDocumentFromReader(strings.NewReader(chapter.Id))
 		if err != nil {
-			return *new(Toc), err
+			return *new(Chapter), err
 		}
 
 		Id, err := strconv.Atoi(
@@ -60,15 +57,20 @@ func GetToc(id int) (Toc, error) {
 			),
 		)
 		if err != nil {
-			return *new(Toc), err
+			return *new(Chapter), err
 		}
 
-		toc.Chapters[i] = Chapter{
+		return Chapter{
 			Name: Name,
 			Id:   Id,
 			Type: chapter.Type,
-		}
+		}, nil
+	})
+	if err != nil {
+		return *new(Toc), err
 	}
 
-	return toc, nil
+	return Toc{
+		Chapters: Chapters,
+	}, nil
 }
