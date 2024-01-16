@@ -73,6 +73,8 @@ func postBody(url string, form url.Values) (io.Reader, error) {
 		return nil, err
 	}
 
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
 	res, err := call(*req)
 	if err != nil {
 		return nil, err
