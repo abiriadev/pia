@@ -29,9 +29,10 @@ type rawChapter struct {
 	Type string `goquery:"td.font12 > b > span"`
 }
 
-func GetToc(id int) (Toc, error) {
+func GetToc(id int, page int) (Toc, error) {
 	rawToc, err := postHtml[rawToc](endPointToc, url.Values{
 		"novel_no": []string{strconv.Itoa(id)},
+		"page":     []string{strconv.Itoa(page)},
 	})
 	if err != nil {
 		return *new(Toc), err
