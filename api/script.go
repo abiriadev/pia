@@ -17,7 +17,7 @@ type rawScript struct {
 
 func GetScript(id int) (Script, error) {
 	var script Script
-	res, err := getJson[rawScript](endPoint + strconv.Itoa(id))
+	res, err := getJson[rawScript](endPointScript + strconv.Itoa(id))
 	if err != nil {
 		return script, err
 	}
