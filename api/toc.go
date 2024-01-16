@@ -8,39 +8,60 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type Toc struct {
+	Chapters []Chapter
+}
+
 type Chapter struct {
+	Name string
+	Id   int
+	Type string
+}
+
+type rawToc struct {
+	Chapters []rawChapter `goquery:"tr"`
+}
+
+type rawChapter struct {
 	Name string `goquery:"td.font12 > b,html"`
 	Id   string `goquery:"tr > td:first-child,html"`
 	Type string `goquery:"td.font12 > b > span"`
 }
 
-type Toc struct {
-	Chapters []Chapter `goquery:"tr"`
-}
-
 func GetToc(id int) (Toc, error) {
-	toc, err := postHtml[Toc](endPointToc, url.Values{
+	rawToc, err := postHtml[rawToc](endPointToc, url.Values{
 		"novel_no": []string{strconv.Itoa(id)},
 	})
 	if err != nil {
 		return *new(Toc), err
 	}
 
-	for i, chapter := range toc.Chapters {
+	toc := Toc{
+		Chapters: make([]Chapter, len(rawToc.Chapters)),
+	}
+
+	for i, chapter := range rawToc.Chapters {
 		nameDoc, err := goquery.NewDocumentFromReader(strings.NewReader(chapter.Name))
 		if err != nil {
-			return toc, err
+			return *new(Toc), err
 		}
 
 		Name := strings.TrimSpace(nameDoc.Children().Children().Eq(1).Contents().Last().Text())
 
 		idDoc, err := goquery.NewDocumentFromReader(strings.NewReader(chapter.Id))
 		if err != nil {
-			return toc, err
+			return *new(Toc), err
 		}
 
-		Id := idDoc.Find("div").Get(0).Attr[1].Key
-		Id = strings.TrimSuffix(strings.TrimPrefix(Id, "novel_on_"), "\"")
+		Id, err := strconv.Atoi(
+			strings.TrimSuffix(
+				strings.TrimPrefix(idDoc.Find("div").Get(0).Attr[1].Key, "novel_on_"),
+				"\"",
+			),
+		)
+		if err != nil {
+			return *new(Toc), err
+		}
 
 		toc.Chapters[i] = Chapter{
 			Name: Name,
