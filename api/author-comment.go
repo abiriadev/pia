@@ -2,6 +2,9 @@ package api
 
 import (
 	"strconv"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 type AuthorComment struct {
@@ -13,6 +16,14 @@ func GetAuthorComment(id int) (AuthorComment, error) {
 	if err != nil {
 		return *new(AuthorComment), err
 	}
+
+	nameDoc, err := goquery.NewDocumentFromReader(strings.NewReader(authorComment.Comment))
+	if err != nil {
+		return *new(AuthorComment), err
+	}
+
+	authorComment.Comment = nameDoc.Find("#writer_comments_box").
+		Contents().Slice(2, goquery.ToEnd).Text()
 
 	return authorComment, nil
 }
