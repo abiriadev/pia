@@ -17,12 +17,12 @@ func GetAuthorComment(id int) (AuthorComment, error) {
 		return *new(AuthorComment), err
 	}
 
-	nameDoc, err := goquery.NewDocumentFromReader(strings.NewReader(authorComment.Comment))
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(authorComment.Comment))
 	if err != nil {
 		return *new(AuthorComment), err
 	}
 
-	authorComment.Comment = nameDoc.Find("#writer_comments_box").
+	authorComment.Comment = doc.Find("#writer_comments_box").
 		Contents().Slice(2, goquery.ToEnd).Text()
 
 	return authorComment, nil
