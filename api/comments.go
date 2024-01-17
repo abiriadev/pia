@@ -62,6 +62,15 @@ func GetComments(id int) (Comments, error) {
 
 			rawComment.UserName = nameDoc.Find("b").Text()
 
+			userImageDoc, err := goquery.NewDocumentFromReader(
+				strings.NewReader(rawComment.UserName),
+			)
+			if err != nil {
+				return *new(Comment), err
+			}
+
+			rawComment.UserImage = userImageDoc.Find("img").AttrOr("src", "")
+
 			return rawComment, nil
 		},
 	)
