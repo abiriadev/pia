@@ -7,7 +7,20 @@ import (
 )
 
 type Comments struct {
-	Lines []string
+	Comments []Comment
+	Page     Page
+}
+
+type Comment struct {
+	Id            int    `json:"comment_idx"`
+	UserName      string `json:"user_name"`
+	RegDate       string `json:"comment_regdate"`
+	Message       string `json:"comment_msg"`
+	ChildrenCount string `json:"comment_child_cnt"`
+	UserImage     string `json:"user_img"`
+	Image         string `json:"comment_img"`
+	Upvotes       int    `json:"comment_vote"`
+	Downvotes     int    `json:"comment_bad"`
 }
 
 type Page struct {
@@ -22,28 +35,25 @@ type Page struct {
 }
 
 type rawComments struct {
-	CommentCounter int  `json:"comment_counter"`
-	Page           Page `json:"page"`
-	Result         any  `json:"result"`
+	CommentCounter int       `json:"comment_counter"`
+	Page           Page      `json:"page"`
+	Result         []Comment `json:"result"`
 }
 
 func GetComments(id int) (Comments, error) {
-	var comments Comments
 	rawComments, err := postJson[rawComments](endPointComments, url.Values{
 		"mode":       []string{"get_comment_list"},
 		"episode_no": []string{strconv.Itoa(id)},
 	})
 
 	if err != nil {
-		return comments, err
+		return *new(Comments), err
 	}
 
 	fmt.Println(rawComments.Page)
 
-	// for _, line := range res.Result {
-	// 	comments.Lines = append(comments.Lines, strings.ReplaceAll(line.Text, "&nbsp;", " "))
-	// }
-	comments.Lines = []string{}
-
-	return comments, nil
+	return Comments{
+		Comments: rawComments.Result,
+		Page:     rawComments.Page,
+	}, nil
 }
