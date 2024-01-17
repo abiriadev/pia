@@ -1,9 +1,12 @@
 package api
 
 import (
-	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/otterize/lox"
 )
 
 type Comments struct {
@@ -45,15 +48,29 @@ func GetComments(id int) (Comments, error) {
 		"mode":       []string{"get_comment_list"},
 		"episode_no": []string{strconv.Itoa(id)},
 	})
-
 	if err != nil {
 		return *new(Comments), err
 	}
 
-	fmt.Println(rawComments.Page)
+	comments, err := lox.MapErr(
+		rawComments.Result,
+		func(rawComment Comment, _ int) (Comment, error) {
+			nameDoc, err := goquery.NewDocumentFromReader(strings.NewReader(rawComment.UserName))
+			if err != nil {
+				return *new(Comment), err
+			}
+
+			rawComment.UserName = nameDoc.Find("b").Text()
+
+			return rawComment, nil
+		},
+	)
+	if err != nil {
+		return *new(Comments), err
+	}
 
 	return Comments{
-		Comments: rawComments.Result,
+		Comments: comments,
 		Page:     rawComments.Page,
 	}, nil
 }
