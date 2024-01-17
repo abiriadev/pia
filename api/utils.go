@@ -83,6 +83,22 @@ func postBody(url string, form url.Values) (io.Reader, error) {
 	return res, nil
 }
 
+func postJson[T any](url string, form url.Values) (T, error) {
+	var body T
+
+	res, err := postBody(url, form)
+	if err != nil {
+		return body, err
+	}
+
+	err = json.NewDecoder(res).Decode(&body)
+	if err != nil {
+		return body, err
+	}
+
+	return body, nil
+}
+
 func postHtml[T any](url string, form url.Values) (T, error) {
 	var body T
 
