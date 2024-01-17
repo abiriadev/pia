@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 )
@@ -10,14 +11,14 @@ type Comments struct {
 }
 
 type Page struct {
-	current  int `json:"CNT"`
-	all      int `json:"ALL"`
-	max      int `json:"MAX"`
-	max_page int `json:"MAX_PAGE"`
-	start    int `json:"START"`
-	end      int `json:"END"`
-	back     int `json:"BACK"`
-	next     int `json:"NEXT"`
+	Current int `json:"CNT"`
+	All     int `json:"ALL"`
+	Max     int `json:"MAX"`
+	MaxPage int `json:"MAX_PAGE"`
+	Start   int `json:"START"`
+	End     int `json:"END"`
+	Back    int `json:"BACK"`
+	Next    int `json:"NEXT"`
 }
 
 type rawComments struct {
@@ -28,7 +29,7 @@ type rawComments struct {
 
 func GetComments(id int) (Comments, error) {
 	var comments Comments
-	_, err := postJson[rawComments](endPointComments, url.Values{
+	rawComments, err := postJson[rawComments](endPointComments, url.Values{
 		"mode":       []string{"get_comment_list"},
 		"episode_no": []string{strconv.Itoa(id)},
 	})
@@ -36,6 +37,8 @@ func GetComments(id int) (Comments, error) {
 	if err != nil {
 		return comments, err
 	}
+
+	fmt.Println(rawComments.Page)
 
 	// for _, line := range res.Result {
 	// 	comments.Lines = append(comments.Lines, strings.ReplaceAll(line.Text, "&nbsp;", " "))
