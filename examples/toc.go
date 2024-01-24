@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	res, err := api.GetToc(145563)
+	res, err := api.GetToc(145563, 1)
 	if err != nil {
 		panic(err)
 	}
