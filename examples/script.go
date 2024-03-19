@@ -3,14 +3,16 @@ package main
 import (
 	"fmt"
 
-	"github.com/abiriadev/pia/api"
+	"github.com/abiriadev/pia"
 )
 
 func main() {
-	res, err := api.GetScript(1720152)
+	client := pia.NewPiaClient("")
+
+	content, err := client.Novel(1720152).Content()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(res.Textify())
+	fmt.Println(content)
 }
