@@ -10,6 +10,29 @@
 $ go get -u github.com/abiriadev/pia@latest
 ```
 
+# 예시
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/abiriadev/pia"
+)
+
+func main() {
+	client := pia.NewPiaClient("")
+
+	content, err := client.Novel(1720152).Content()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(content)
+}
+```
+
 # 지원 API
 
 -   [ ] 작품 목록 조회
@@ -20,7 +43,7 @@ $ go get -u github.com/abiriadev/pia@latest
     -   [ ] 태그
     -   [ ] 추천수
 -   [ ] 작품 회차 조회
--   [ ] 작품 본문 조회
+-   [x] 작품 본문 조회
     -   [ ] 유저 댓글 조회
 -   [ ] 작가 조회
 
